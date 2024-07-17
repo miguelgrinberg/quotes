@@ -11,3 +11,40 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.SearchForm {
+  margin-bottom: 25px;
+}
+
+.Tags {
+  margin-top: 10px;
+}
+
+.Results {
+  margin-top: 10px;
+}
+
+.Filter {
+  font-style: italic;
+}
+
+.Tags button {
+  padding: 0px;
+}
+
+.ResultQuote {
+  font-weight: bold;
+}
+
+.ResultAuthor {
+}
+
+.ResultScore {
+  font-size: 0.8em;
+}
+
+.ResultTags {
+  font-size: 0.8em;
+  font-style: italic;
+}
+
