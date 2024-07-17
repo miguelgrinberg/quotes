@@ -1,0 +1,17 @@
+[project]
+name = "quotes"
+version = "0.1"
+dependencies = [
+    "elasticsearch-dsl",
+    "fastapi",
+    "sentence-transformers",
+    "uvicorn",
+]
+
+[project.optional-dependencies]
+dev = [
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

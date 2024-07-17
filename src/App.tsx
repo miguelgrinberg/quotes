@@ -6,6 +6,14 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
+interface Quote {
+  id: string;
+  quote: string;
+  author: string;
+  tags: string[];
+  score: number;
+};
+
 interface FilterProps {
   tag: string;
   count: number;
@@ -15,11 +23,8 @@ export default function App() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState<string>('');
   const [filters, setFilters] = useState<FilterProps[]>([{tag: 'baz', count: 56}, {tag: 'qux', count: 44}]);
-  const [tags, setTags] = useState<FilterProps[]>([{tag: 'foo', count: 23}, {tag: 'bar', count: 19}]);
-  const [results, setResults] = useState([
-    {quote: 'foo bar bar', author: 'John Doe', score: 0.67, tags: ['foo', 'bar']},
-    {quote: 'foo bar bar', author: 'John Doe', score: 0.67, tags: ['foo', 'bar']},
-  ]);
+  const [tags, setTags] = useState<FilterProps[] | null>([{tag: 'foo', count: 23}, {tag: 'bar', count: 19}]);
+  const [results, setResults] = useState<Quote[] | null>(null);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -35,16 +40,29 @@ export default function App() {
   const onReset = () => {
     setQuery('');
     setFilters([]);
-    setTags([]);
-    setResults([]);
+    setTags(null);
+    setResults(null);
     inputRef.current?.focus();
   };
 
   const onFilter = ({tag, count}: FilterProps) => {
     setFilters([...filters, {tag, count}]);
-    setTags([]);
-    setResults([]);
+    setTags(null);
+    setResults(null);
   };
+
+  useEffect(() => {
+    (async () => {
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query, filters: filters.map(filter => filter.tag)}),
+      });
+      const data = await response.json();
+      setResults(data.quotes);
+      setTags(data.tags);
+    })()
+  }, [query, filters]);
 
   return (
     <Container fluid="md" className="App">
@@ -56,49 +74,67 @@ export default function App() {
       </Row>
       <Row>
         <Col md={3} className="Tags">
-          {filters.map(({tag, count}) => (
-            <div key={tag} className="Filter">
-              » {tag} ({count})
-            </div>
-          ))}
-          {(filters.length > 0) && (
-            <>
-              <Button variant="link" onClick={onReset}>Reset</Button>
-              <hr />
-            </>
-          )}
-          {(tags.length === 0) ?
+          <>
+            {filters != null && (
+              <>
+                {filters.map(({tag, count}) => (
+                  <div key={tag} className="Filter">
+                    » {tag} ({count})
+                  </div>
+                ))}
+                {(filters.length > 0) && (
+                  <>
+                    <Button variant="link" onClick={onReset}>Reset</Button>
+                    <hr />
+                  </>
+                )}
+              </>
+            )}
+            {(tags === null) ?
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            :
+              <>
+                {(tags.length === 0) ?
+                  <p>No tags.</p>
+                :
+                  <>
+                    {tags.map(({tag, count}) => (
+                      <div key={tag} className="Tag">
+                        <Button variant="link" onClick={() => onFilter({tag, count})}>{tag}</Button> ({count})
+                      </div>
+                    ))}
+                  </>
+                }
+              </>
+            }
+          </>
+        </Col>
+        <Col md={9} className="Results">
+          {(results === null) ?
             <Spinner animation="border" role="status">
               <span className="visually-hidden">Loading...</span>
             </Spinner>
           :
             <>
-              {tags.map(({tag, count}) => (
-                <div key={tag} className="Tag">
-                  <Button variant="link" onClick={() => onFilter({tag, count})}>{tag}</Button> ({count})
-                </div>
-              ))}
+              {(results.length === 0) ?
+                <p>No results. Sorry!</p>
+              :
+                <>
+                  {results.map(({quote, author, score, tags}, index) => (
+                    <div key={index} className="Result">
+                      <p>
+                        <span className="ResultQuote">{quote}</span> — <span className="ResultAuthor">{author}</span>
+                        <br />
+                        <span className="ResultScore">[Score: {score}]</span> <span className="ResultTags">{tags.map(tag => `#${tag}`).join(', ')}</span>
+                      </p>
+                    </div>
+                  ))}
+                </>
+              }
             </>
           }
-        </Col>
-        <Col md={9} className="Results">
-        {(results.length === 0) ?
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        :
-          <>
-            {results.map(({quote, author, score, tags}, index) => (
-              <div key={index} className="Result">
-                <p>
-                  <span className="ResultQuote">{quote}</span> — <span className="ResultAuthor">{author}</span>
-                  <br />
-                  <span className="ResultScore">[Score: {score}]</span> <span className="ResultTags">{tags.map(tag => `#${tag}`).join(', ')}</span>
-                </p>
-              </div>
-            ))}
-          </>
-        }
         </Col>
       </Row>
     </Container>
