@@ -68,12 +68,13 @@ async def search_quotes(q: str, tags: list[str], use_knn: bool=True, start: int=
     else:
         s = s.query('match', quote=q)
     if tags:
-        s = s.filter('terms', tags=tags)
+        for tag in tags:
+            s = s.filter('terms', tags=[tag])
     s.aggs.bucket('tags', 'terms', field='tags', size=100)
     response = await s.execute()
     results = list(response)
     buckets = [[tag.key, tag.doc_count] for tag in response.aggs.tags.buckets]
-    return results, buckets
+    return results, buckets, response.hits.total.value
 
 
 if __name__ == '__main__':

@@ -24,6 +24,11 @@ code {
   margin-top: 10px;
 }
 
+.Results .Summary {
+  font-size: 0.9em;
+  font-style: italic;
+}
+
 .Filter {
   font-style: italic;
 }
