@@ -160,16 +160,17 @@ export default function App() {
                   ))}
                 </>
               }
-              <Stack direction="horizontal">
-                <Pagination size="lg">
-                  <Pagination.First onClick={() => setStart(0)} disabled={start === 0}/>
-                  <Pagination.Prev onClick={() => setStart(start - results.length)} disabled={start === 0} />
-                </Pagination>
-                <div className="ms-auto"/>
-                <Pagination size="lg">
-                  <Pagination.Next onClick={() => setStart(start + results.length)} disabled={start + results.length >= total} />
-                </Pagination>
-              </Stack>
+              <Pagination>
+                {start > 0 && 
+                  <>
+                    <Pagination.First onClick={() => setStart(0)} />
+                    <Pagination.Prev onClick={() => setStart(start - results.length)} />
+                  </>
+                }
+                {start + results.length <= total &&
+                  <Pagination.Next onClick={() => setStart(start + results.length)} />
+                }
+              </Pagination>
             </>
           }
         </Col>

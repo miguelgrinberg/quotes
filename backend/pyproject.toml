@@ -2,7 +2,7 @@
 name = "quotes"
 version = "0.1"
 dependencies = [
-    "elasticsearch-dsl",
+    "elasticsearch-dsl[async]",
     "fastapi",
     "sentence-transformers",
     "uvicorn",
