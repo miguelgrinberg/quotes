@@ -54,6 +54,7 @@ docker run -p 9200:9200 -d --name elasticsearch \
   -e "xpack.security.enabled=false" \
   -e "xpack.security.http.ssl.enabled=false" \
   -e "xpack.license.self_generated.type=basic" \
+  -v "./data:/usr/share/elasticsearch/data" \
   docker.elastic.co/elasticsearch/elasticsearch:8.14.2
 ```
 
