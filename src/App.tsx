@@ -167,7 +167,7 @@ export default function App() {
                     <Pagination.Prev onClick={() => setStart(start - results.length)} />
                   </>
                 }
-                {start + results.length <= total &&
+                {results.length > 0 && start + results.length <= total &&
                   <Pagination.Next onClick={() => setStart(start + results.length)} />
                 }
               </Pagination>

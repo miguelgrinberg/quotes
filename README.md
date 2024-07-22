@@ -19,7 +19,9 @@ Sentence Transformers model.
 
 The dataset used by this application has about 37,000 famous quotes, each with
 their author and tags. The data originates from a
-[Kaggle dataset](https://www.kaggle.com/datasets/akmittal/quotes-dataset).
+[Kaggle dataset](https://www.kaggle.com/datasets/akmittal/quotes-dataset) that
+appears to have been generated from quotes that were scraped from the Goodreads
+[popular quotes](https://www.goodreads.com/quotes) page.
 
 ## Requirements
 
@@ -55,7 +57,7 @@ docker run -p 9200:9200 -d --name elasticsearch \
   -e "xpack.security.http.ssl.enabled=false" \
   -e "xpack.license.self_generated.type=basic" \
   -v "./data:/usr/share/elasticsearch/data" \
-  docker.elastic.co/elasticsearch/elasticsearch:8.14.2
+  docker.elastic.co/elasticsearch/elasticsearch:8.14.3
 ```
 
 ### Create the quotes database
