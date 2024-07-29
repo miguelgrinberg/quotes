@@ -104,6 +104,8 @@ numpy==1.26.4
     #   scipy
     #   sentence-transformers
     #   transformers
+orjson==3.10.6
+    # via quotes (/Users/miguelgrinberg/Documents/dev/quotes/backend/pyproject.toml)
 packaging==24.1
     # via
     #   huggingface-hub

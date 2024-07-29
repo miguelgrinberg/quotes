@@ -2,10 +2,11 @@ import asyncio
 import csv
 from time import time
 import elasticsearch_dsl as dsl
+from elasticsearch import OrjsonSerializer
 from sentence_transformers import SentenceTransformer
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
-dsl.async_connections.create_connection(hosts=['http://localhost:9200'])
+dsl.async_connections.create_connection(hosts=['http://localhost:9200'], serializer=OrjsonSerializer())
 
 
 class QuoteDoc(dsl.AsyncDocument):
@@ -50,6 +51,7 @@ async def ingest_quotes():
                 count += 1
                 if count % 100 == 0:
                     ingest_progress(count, start)
+            ingest_progress(count, start)
 
     async def get_next_quote():
         quotes = []

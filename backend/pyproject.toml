@@ -4,6 +4,7 @@ version = "0.1"
 dependencies = [
     "elasticsearch-dsl[async]",
     "fastapi",
+    "orjson",
     "sentence-transformers",
     "uvicorn",
 ]
