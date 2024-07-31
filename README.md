@@ -37,6 +37,8 @@ Follow these steps to install this demo on your computer:
 
 ### Clone this repository
 
+Run the following command to install a copy of this project on your computer:
+
 ```bash
 git clone https://github.com/miguelgrinberg/quotes
 cd quotes
@@ -44,11 +46,16 @@ cd quotes
 
 ### Install the Node and Python dependencies
 
+Run the following command to set up the JavaScript and Python environment and
+install all the dependencies:
+
 ```bash
 npm install
 ```
 
 ### Start a development Elasticsearch container
+
+Run this command to start a single-node Elasticsearch instance:
 
 ```bash
 docker run -p 9200:9200 -d --name elasticsearch \
@@ -56,11 +63,13 @@ docker run -p 9200:9200 -d --name elasticsearch \
   -e "xpack.security.enabled=false" \
   -e "xpack.security.http.ssl.enabled=false" \
   -e "xpack.license.self_generated.type=basic" \
-  -v "./data:/usr/share/elasticsearch/data" \
+  -v "./backend/data:/usr/share/elasticsearch/data" \
   docker.elastic.co/elasticsearch/elasticsearch:8.14.3
 ```
 
 ### Create the quotes database
+
+Run this command in your terminal:
 
 ```bash
 npm run ingest
@@ -71,11 +80,15 @@ may take a few minutes.
 
 ### Start the back end
 
+Run this command in your terminal:
+
 ```bash
 npm run backend
 ```
 
-### Open a second terminal window and start the front end
+### Start the front end
+
+Open a second terminal window and run this command:
 
 ```bash
 npm start
