@@ -6,7 +6,7 @@ from elasticsearch import OrjsonSerializer
 from sentence_transformers import SentenceTransformer
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
-dsl.async_connections.create_connection(hosts=['http://localhost:9200'], serializer=OrjsonSerializer())
+dsl.async_connections.create_connection(hosts=['http://localhost:9200']) #, serializer=OrjsonSerializer())
 
 
 class QuoteDoc(dsl.AsyncDocument):
@@ -28,11 +28,10 @@ def ingest_progress(count, start):
     print(f'\rIngested {count} quotes. ({count / elapsed:.0f}/sec)', end='')
 
 
-async def embed_quotes(quotes):
+def embed_quotes(quotes):
     embeddings = model.encode([q.quote for q in quotes])
     for q, e in zip(quotes, embeddings):
         q.embedding = e.tolist()
-        yield q
 
 
 async def ingest_quotes():
@@ -40,30 +39,28 @@ async def ingest_quotes():
         await QuoteDoc._index.delete()
     await QuoteDoc.init()
 
-    async def get_next_raw_quote():
+    async def get_next_quote():
+        quotes = []
         with open('quotes.csv') as f:
             reader = csv.DictReader(f)
             count = 0
             start = time()
             for row in reader:
-                q = QuoteDoc(quote=row['quote'], author=row['author'], tags=row['tags'].split(','))
-                yield q
-                count += 1
-                if count % 100 == 0:
+                q = QuoteDoc(quote=row['quote'], author=row['author'],
+                             tags=row['tags'].split(','))
+                quotes.append(q)
+                if len(quotes) == 512:
+                    embed_quotes(quotes)
+                    for q in quotes:
+                        yield q
+                    count += len(quotes)
                     ingest_progress(count, start)
-            ingest_progress(count, start)
-
-    async def get_next_quote():
-        quotes = []
-        async for q in get_next_raw_quote():
-            quotes.append(q)
-            if len(quotes) == 512:
-                async for qq in embed_quotes(quotes):
-                    yield qq
-                quotes = []
-        if len(quotes) > 0:
-            async for qq in embed_quotes(quotes):
-                yield qq
+                    quotes = []
+            if len(quotes) > 0:
+                embed_quotes(quotes)
+                for q in quotes:
+                    yield q
+                ingest_progress(count, start)
 
     await QuoteDoc.bulk(get_next_quote())
 
