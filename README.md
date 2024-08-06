@@ -27,7 +27,7 @@ appears to have been generated from quotes that were scraped from the Goodreads
 
 Please make sure you have the following installed:
 
-- Python 3.8 or newer
+- Python 3.10 or newer
 - Node.js 18 or newer
 - Docker
 
