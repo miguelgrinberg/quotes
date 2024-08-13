@@ -64,7 +64,7 @@ docker run -p 9200:9200 -d --name elasticsearch \
   -e "xpack.security.http.ssl.enabled=false" \
   -e "xpack.license.self_generated.type=basic" \
   -v "./backend/data:/usr/share/elasticsearch/data" \
-  docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+  docker.elastic.co/elasticsearch/elasticsearch:8.15.0
 ```
 
 ### Create the quotes database
