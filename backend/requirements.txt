@@ -35,7 +35,7 @@ elastic-transport==8.13.1
     # via elasticsearch
 elasticsearch==8.14.0
     # via elasticsearch-dsl
-elasticsearch-dsl @ git+https://github.com/miguelgrinberg/elasticsearch-dsl-py@7b084ca04a8e1ac95cd23b172c9a6f423899c4fb
+elasticsearch-dsl==8.15.0
     # via quotes (/Users/miguelgrinberg/Documents/dev/quotes/backend/pyproject.toml)
 email-validator==2.2.0
     # via fastapi
